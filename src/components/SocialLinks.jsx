@@ -13,7 +13,7 @@ const SocialLinks = () => {
               LinkedIn <FaLinkedin size={30} />
             </>
             ),
-            href: 'https://www.linkedin.com/in/amankumar-090461222',
+            href: 'https://www.linkedin.com/in/aman-kumar-090461222/',
             style: 'rounded-tr-md'
         },
         {

@@ -1,47 +1,96 @@
-import React from 'react'
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/contact', formData);
+
+      if (response.status === 200) {
+        alert('Contact information saved successfully');
+        setFormData({ name: '', email: '', message: '' });
+      }
+    } catch (error) {
+      console.error('Error saving contact information', error);
+    }
+  };
+
   return (
-    <div
-        name='contact'
-        className='w-full h-screen bg-gradient-to-b from-black to-gray-800 p-4 text-white'
-    >
-      <div className='flex flex-col p-4 justify-center max-w-screen-lg mx-auto h-full'>
-        <div className='pb-8'>
-            <p className='text-4xl font-bold inline border-b-4 border-gray-500'>Contact</p>
-            <p className='py-6'>Submit the form below to get in touch with me</p>
-        </div>
-
-        <div className='flex justify-center items-center'>
-            <form actions="https://getform.io/f/YerPQkbO" method="POST" className='flex flex-col w-full md:w-1/2'>
+    <div name="contact" className="w-full h-screen bg-gradient-to-b from-black to-gray-800 p-4 text-white">
+      <div className="flex flex-col items-center justify-center h-full">
+        <div className="relative p-6 max-w-md w-full bg-gray-900 rounded-lg border-4 border-gray-600">
+          <div className="absolute top-0 left-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-tr-lg -translate-x-2 -translate-y-2"></div>
+          <div className="absolute top-0 right-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-tl-lg -translate-x-2 -translate-y-2"></div>
+          <div className="absolute bottom-0 left-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-br-lg translate-x-2 translate-y-2"></div>
+          <div className="absolute bottom-0 right-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-bl-lg translate-x-2 translate-y-2"></div>
+  
+          <h1 className="text-3xl text-center font-bold mb-6 relative z-10">Contact Us</h1>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label htmlFor="name" className="block mb-2 text-lg">
+                  Name
+                </label>
                 <input
-                type="text"
-                name="name"
-                placeholder="Enter your name"
-                className='p-2 bg-transparent border-2 rounded-md text-white focus:outline-none'
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter your name"
                 />
-
+              </div>
+              <div>
+                <label htmlFor="email" className="block mb-2 text-lg">
+                  Email
+                </label>
                 <input
-                type='text'
-                name='email'
-                placeholder='Enter your email'
-                className='p-2 bg-transparent border-2 rounded-md text-white focus:outline-none'
+                  type="email"
+                  name="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter your email"
                 />
-
+              </div>
+              <div>
+                <label htmlFor="message" className="block mb-2 text-lg">
+                  Message
+                </label>
                 <textarea
-                    name='message'
-                    placeholder='Enter your message'
-                    rows="8"
-                    className='my-4 p-2 bg-transparent border-2 rounded-md text-white focus:outline-none'
+                  name="message"
+                  id="message"
+                  rows="5"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter your message"
                 ></textarea>
-
-                <button className='text-white bg-gradient-to-b from-cyan-500 to to-blue-500 px-6 py-3 my-8 mx-auto flex items-center rounded-md
-                hover:scale-110 duration-300'>Let's Talk</button>
-            </form>
+              </div>
+            </div>
+            <div className="flex justify-center mt-6">
+              <button
+                type="submit"
+                className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Contact
+export default Contact;
