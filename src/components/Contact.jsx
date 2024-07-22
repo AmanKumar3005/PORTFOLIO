@@ -3,6 +3,8 @@ import axios from 'axios';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -11,15 +13,21 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
+
     try {
       const response = await axios.post('http://localhost:5000/contact', formData);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert('Contact information saved successfully');
         setFormData({ name: '', email: '', message: '' });
       }
     } catch (error) {
       console.error('Error saving contact information', error);
+      setError('There was an error saving your contact information. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -36,9 +44,7 @@ const Contact = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label htmlFor="name" className="block mb-2 text-lg">
-                  Name
-                </label>
+                <label htmlFor="name" className="block mb-2 text-lg">Name</label>
                 <input
                   type="text"
                   name="name"
@@ -50,9 +56,7 @@ const Contact = () => {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block mb-2 text-lg">
-                  Email
-                </label>
+                <label htmlFor="email" className="block mb-2 text-lg">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -64,9 +68,7 @@ const Contact = () => {
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block mb-2 text-lg">
-                  Message
-                </label>
+                <label htmlFor="message" className="block mb-2 text-lg">Message</label>
                 <textarea
                   name="message"
                   id="message"
@@ -78,12 +80,14 @@ const Contact = () => {
                 ></textarea>
               </div>
             </div>
+            {error && <p className="text-red-500 text-center">{error}</p>}
             <div className="flex justify-center mt-6">
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700"
               >
-                Submit
+                {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>
           </form>
