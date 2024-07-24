@@ -1,100 +1,169 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+// import React, { useRef } from 'react';
+// import emailjs from '@emailjs/browser';
+
+// const Contact = () => {
+//   const form = useRef();
+
+//   const sendEmail = (e) => {
+//     e.preventDefault();
+
+//     emailjs
+//       .sendForm('service_djmmh1v', 'template_bvapyap', form.current, '5qdpBqkhjJUKpKaAr')
+//       .then(
+//         () => {
+//           console.log('MESSAGE SENT!');
+//         },
+//         (error) => {
+//           console.log('FAILED...', error.text);
+//         }
+//       );
+//   };
+
+//   return (
+//     <div
+//       name="contact"
+//       className='w-full min-h-screen bg-gradient-to-b from-gray-800 to-black text-white flex items-center justify-center'
+//     >
+//       <div className='max-w-screen-lg p-8 bg-gray-900 bg-opacity-75 rounded-lg shadow-lg mx-auto flex flex-col justify-center'>
+//         <div className='pb-8'>
+//           <p className='text-5xl font-bold inline border-b-4 border-gray-500'>Contact</p>
+//         </div>
+//         <form ref={form} onSubmit={sendEmail} className='flex flex-col space-y-4'>
+//           <div className='mb-4'>
+//             <label className='block text-gray-200 text-sm font-bold mb-2' htmlFor="user_name">
+//               Name
+//             </label>
+//             <input
+//               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+//               type="text"
+//               name="from_name"
+//               id="from_name"
+//             />
+//           </div>
+//           <div className='mb-4'>
+//             <label className='block text-gray-200 text-sm font-bold mb-2' htmlFor="user_email">
+//               Email
+//             </label>
+//             <input
+//               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+//               type="email"
+//               name="from_email"
+//               id="from_email"
+//             />
+//           </div>
+//           <div className='mb-6'>
+//             <label className='block text-gray-200 text-sm font-bold mb-2' htmlFor="message">
+//               Message
+//             </label>
+//             <textarea
+//               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+//               name="message"
+//               id="message"
+//               rows="4"
+//             />
+//           </div>
+//           <div className='flex items-center justify-between'>
+//             <input
+//               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+//               type="submit"
+//               value="Send"
+//             />
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Contact;
+
+import React, { useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const form = useRef();
+  const [messageSent, setMessageSent] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
+  const sendEmail = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError('');
 
-    try {
-      const response = await axios.post('http://localhost:5000/contact', formData);
-
-      if (response.status === 201) {
-        alert('Contact information saved successfully');
-        setFormData({ name: '', email: '', message: '' });
-      }
-    } catch (error) {
-      console.error('Error saving contact information', error);
-      setError('There was an error saving your contact information. Please try again later.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    emailjs
+      .sendForm('service_djmmh1v', 'template_bvapyap', form.current, '5qdpBqkhjJUKpKaAr')
+      .then(
+        () => {
+          console.log('MESSAGE SENT!');
+          setMessageSent(true);
+          form.current.reset();
+        },
+        (error) => {
+          console.log('FAILED...', error.text);
+        }
+      );
   };
 
   return (
-    <div name="contact" className="w-full h-screen bg-gradient-to-b from-black to-gray-800 p-4 text-white">
-      <div className="flex flex-col items-center justify-center h-full">
-        <div className="relative p-6 max-w-md w-full bg-gray-900 rounded-lg border-4 border-gray-600">
-          <div className="absolute top-0 left-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-tr-lg -translate-x-2 -translate-y-2"></div>
-          <div className="absolute top-0 right-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-tl-lg -translate-x-2 -translate-y-2"></div>
-          <div className="absolute bottom-0 left-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-br-lg translate-x-2 translate-y-2"></div>
-          <div className="absolute bottom-0 right-0 w-6 h-6 bg-gray-900 border-4 border-gray-600 rounded-bl-lg translate-x-2 translate-y-2"></div>
-  
-          <h1 className="text-3xl text-center font-bold mb-6 relative z-10">Contact Us</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <label htmlFor="name" className="block mb-2 text-lg">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Enter your name"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block mb-2 text-lg">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Enter your email"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block mb-2 text-lg">Message</label>
-                <textarea
-                  name="message"
-                  id="message"
-                  rows="5"
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Enter your message"
-                ></textarea>
-              </div>
-            </div>
-            {error && <p className="text-red-500 text-center">{error}</p>}
-            <div className="flex justify-center mt-6">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
-            </div>
-          </form>
+    <div
+      name="contact"
+      className='w-full min-h-screen bg-gradient-to-b from-gray-800 to-black text-white flex items-center justify-center'
+    >
+      <div className='max-w-screen-lg p-8 bg-gray-900 bg-opacity-75 rounded-lg shadow-lg mx-auto flex flex-col justify-center'>
+        <div className='pb-8'>
+          <p className='text-5xl font-bold inline border-b-4 border-gray-500'>Contact</p>
         </div>
+        <form ref={form} onSubmit={sendEmail} className='flex flex-col space-y-4'>
+          <div className='mb-4'>
+            <label className='block text-gray-200 text-sm font-bold mb-2' htmlFor="from_name">
+              Name
+            </label>
+            <input
+              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+              type="text"
+              name="from_name"
+              id="from_name"
+              required
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block text-gray-200 text-sm font-bold mb-2' htmlFor="from_email">
+              Email
+            </label>
+            <input
+              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+              type="email"
+              name="from_email"
+              id="from_email"
+              required
+            />
+          </div>
+          <div className='mb-6'>
+            <label className='block text-gray-200 text-sm font-bold mb-2' htmlFor="message">
+              Message
+            </label>
+            <textarea
+              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+              name="message"
+              id="message"
+              rows="4"
+              required
+            />
+          </div>
+          <div className='flex items-center justify-between'>
+            <input
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+              type="submit"
+              value="Send"
+            />
+          </div>
+        </form>
+        {messageSent && (
+          <div className='mt-4 p-4 bg-green-500 text-white rounded'>
+            Message sent successfully!
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default Contact;
+
